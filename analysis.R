@@ -294,7 +294,7 @@ highchart() %>%
     # hc_tooltip(crosshairs = TRUE, borderWidth = 5, sort = TRUE, table = TRUE) 
 
 
-# 2.4.1 Creating fucntion for plotting Deaths Rate ------------------------
+# 2.4.1 Creating function for plotting Deaths Rate ------------------------
 
 # function to plot Case Fatality Rate
 hc_plot_DeathsRate <- function(data = NewCases_tbl, countryName = 'South Africa'){
@@ -344,6 +344,8 @@ hc_plot_DeathsRate <- function(data = NewCases_tbl, countryName = 'South Africa'
 
 
 hc_plot_DeathsRate(data = NewCases_tbl, countryName = 'Italy')
+
+hc_plot_DeathsRate(data = NewCases_tbl, countryName = 'United State')
 
 
 
