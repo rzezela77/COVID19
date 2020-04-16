@@ -127,6 +127,8 @@ NewCases_tbl$Death_Rate <- round((NewCases_tbl$death/NewCases_tbl$confirmed)*100
 
 # 2.1 Plotting New Cases per Day ----------------------------------------------
 
+NewCases_tbl %>% glimpse()
+
 plot_data <- NewCases_tbl %>% 
     # filter by Country Name
     filter(countryName == 'South Africa') %>% 
@@ -411,3 +413,19 @@ hcmap(worldgeojson, name = "Total Confirmed",
     hc_tooltip(useHTML = TRUE,
                headerFormat = '',
                pointFormat = paste0('{point.name}: {point.value}'))
+
+
+
+# 4.0 Testing -------------------------------------------------------------
+
+dataframeTotal %>% 
+  filter(countryName == 'United Kingdom')
+
+coronavirus %>% 
+  filter(countryName == 'United Kingdom') %>% 
+  tail()
+
+
+coronavirus %>% 
+  filter(countryName == 'Mozambique') %>% 
+  tail()
