@@ -33,6 +33,27 @@ dataframeTotal <- coronavirus %>%
     dplyr::ungroup() %>%
     select(-c(date,region,lat,lon)) 
 
+
+df_TotalYesterdayCases <- coronavirus %>% 
+  dplyr::group_by(countryName) %>%
+  slice(n() - 1) %>% # max_date -1
+  ungroup() %>%
+  dplyr::mutate(Unrecovered = confirmed - ifelse(is.na(recovered), 0, recovered) - ifelse(is.na(death), 0, death)) %>%
+  dplyr::arrange(-confirmed) %>%
+  dplyr::ungroup() %>%
+  select(-c(date,region,lat,lon)) 
+
+
+dataframeTotal %>% 
+  filter(countryName == 'Mozambique')
+
+df_TotalYesterdayCases %>% 
+  filter(countryName == 'Mozambique')
+
+
+v_getYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = 'Mozambique', typeCase = 'Confirmed')
+v_getYesterdayPerc
+
 # %>% 
 #     dplyr::mutate(activeCasesPer = round((Unrecovered/confirmed)*100),1)
 
@@ -64,6 +85,24 @@ No_affected_country <- dataframeTotal %>%
     pull() %>% 
     as.integer()
 
+
+
+
+# 1.2 getting Yesterday data ----------------------------------------------
+
+max_date <- as.Date(max(coronavirus$date)) 
+
+
+df_TotalOldCases = coronavirus %>%
+  dplyr::filter(date == max_date - 1) %>%
+  dplyr::mutate(Unrecovered = confirmed - recovered - death) %>%
+  summarise(totalConfirmed = sum(confirmed,na.rm = T),
+            totalDeath = sum(death,na.rm = T),
+            totalRecovered = sum(recovered,na.rm = T),
+            totalUnrecovered = sum(Unrecovered,na.rm = T)
+  )
+
+coronavirus %>% tail()
 
 
 # # Confirmed Cases Over Time
@@ -122,6 +161,9 @@ NewCases_tbl %>%
     tail()
 
 NewCases_tbl$Death_Rate <- round((NewCases_tbl$death/NewCases_tbl$confirmed)*100, 2)
+
+
+
 
 # 2.0 Creating Visualizations ---------------------------------------------
 
@@ -387,7 +429,10 @@ hcmap("custom/world", name = "Total Confirmed",
     # hc_add_theme(hc_theme_flat() ) %>% 
     hc_chart(zoomType = "xy") %>%
     hc_mapNavigation(enabled = TRUE) %>% 
-    hc_colorAxis(stops = color_stops(5)) %>% 
+    # hc_colorAxis(stops = color_stops(5)) %>% 
+    # hc_colorAxis(stops = color_stops(8, c("#0000CD","#8ba9fe","#fee08b","#cc0000"))) %>% 
+    # hc_colorAxis(dataClasses = color_classes(c(seq(0, 10, by = 2), 50))) %>% 
+    hc_colorAxis(dataClasses = color_classes(c(0, 20, 50, 100, 500, 1000, 10000))) %>%
     hc_exporting(enabled = TRUE) %>% 
     hc_tooltip(useHTML = TRUE,
                headerFormat = '',

@@ -50,6 +50,12 @@ if(interactive()){
         server = function(input, output) {
             
             source(file = "server/01_srv_dashboard_COVID19.R", local = TRUE)
+            
+            source(file = "server/02_serverWorldMapUI.R", local = TRUE)
+            
+            source(file = "server/03_serverComparisonUI.R", local = TRUE)
+            
+            source(file = "server/04_serverForecastUI.R", local = TRUE)
         }
     )
 }
