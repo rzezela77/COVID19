@@ -14,8 +14,9 @@ body = argonDashBody(
         iconList = list(
             icon("home"),
             icon("tachometer-alt"), 
-            icon("laptop-code"), 
-            icon("chart-line"),
+            # icon("laptop-code"), 
+            icon("globe"), 
+            icon("chart-bar"),
             icon("chart-line"),
             icon("twitter")
         ),
@@ -24,24 +25,43 @@ body = argonDashBody(
             active = T,
             # uiOutput("homeUI") %>% withSpinner()
             argonRow(
+                
                 argonColumn(
-                    width = 4,
-                    img(src = 'Tchingue_Consulting_v3.PNG',width = "100%"),
-                    h6("Source: Wikipedia",style = 'text-align:center;
-             font-style: italic;font-weight: bold;')
+                           width = 4,
+                           img(src = 'cdc-k0KRNtqcjfw-unsplash.jpg',width = "100%"),
+                           h6("Source: Photo by CDC on Unsplash",style = 'text-align:center;
+                    font-style: italic;font-weight: bold;')
+                       ),
+                argonColumn(
+                    width = 4
+                    # img(src = 'covidGif.gif',width = "100%",height = "80%"),
+                    # h6("Source: Giphy",style = 'text-align:center;font-style: italic;font-weight: bold;')
                 ),
                 argonColumn(
-                    width = 5,
-                    h1("Import argonDash elements inside shiny!", align = "center"),
-                    h5("Don't need any sidebar, navbar, ...", align = "center"),
-                    h5("Only focus on basic elements for a pure interface", align = "center"),
-                    # p("A new invisible enemy, only 30kb in size, has emerged and is on a killing spree around the world: 2019-nCoV, the Novel Coronavirus!"),
-                     h5("A new invisible enemy, only 30kb in size, has emerged and is on a killing spree around the world: 2019-nCoV, the Novel Coronavirus!",style = 'text-align:justify;'),
-                    # p("In right we can see some precautionary measures to prevent spread of Coronavirus.",style = 'text-align:justify;'),
-                    tags$br(),
-                    # p("This monitor was developed to make the data and key visualizations of COVID-19 trends available to everyone and also provide a platform to conduct a sentiment analysis of social media posts using Natural Language Processing (NLP).",style = 'text-align:justify;')
-                    p("This monitor was developed to make the data and key visualizations of COVID-19 trends available to everyone and also provide a platform to conduct a sentiment analysis of social media posts using Natural Language Processing (NLP).")
-                )
+                            width = 4,
+                            img(src = 'covidGif.gif',width = "100%",height = "80%"),
+                            h6("Source: Giphy",style = 'text-align:center;font-style: italic;font-weight: bold;')
+                        )
+                
+                
+             #    argonColumn(
+             #        width = 4,
+             #        img(src = 'Tchingue_Consulting_v3.PNG',width = "100%"),
+             #        h6("Source: Wikipedia",style = 'text-align:center;
+             # font-style: italic;font-weight: bold;')
+             #    ),
+                # argonColumn(
+                #     width = 5,
+                #     h1("Import argonDash elements inside shiny!", align = "center"),
+                #     h5("Don't need any sidebar, navbar, ...", align = "center"),
+                #     h5("Only focus on basic elements for a pure interface", align = "center"),
+                #     # p("A new invisible enemy, only 30kb in size, has emerged and is on a killing spree around the world: 2019-nCoV, the Novel Coronavirus!"),
+                #      h5("A new invisible enemy, only 30kb in size, has emerged and is on a killing spree around the world: 2019-nCoV, the Novel Coronavirus!",style = 'text-align:justify;'),
+                #     # p("In right we can see some precautionary measures to prevent spread of Coronavirus.",style = 'text-align:justify;'),
+                #     tags$br(),
+                #     # p("This monitor was developed to make the data and key visualizations of COVID-19 trends available to everyone and also provide a platform to conduct a sentiment analysis of social media posts using Natural Language Processing (NLP).",style = 'text-align:justify;')
+                #     p("This monitor was developed to make the data and key visualizations of COVID-19 trends available to everyone and also provide a platform to conduct a sentiment analysis of social media posts using Natural Language Processing (NLP).")
+                # )
             #     argonColumn(
             #         width = 3,
             #         img(src = 'covidGif.gif',width = "100%",height = "80%"),
@@ -74,6 +94,8 @@ body = argonDashBody(
                         inputId = "countryNameInput",
                         label = strong("Select country:"),
                         choices = levels(dataframeTotal$countryName),
+                        # selected = levels(dataframeTotal$countryName),
+                        # multiple = TRUE,
                         selected = "Mozambique",
                         width = "100%",
                         options = list(`live-search` = TRUE
@@ -91,7 +113,7 @@ body = argonDashBody(
                 )
         ),
         argonTab(
-            tabName = "Mapa",
+            tabName = "World Map",
             active = F,
             uiOutput("worldMapUI") %>% withSpinner()
             
@@ -106,17 +128,6 @@ body = argonDashBody(
             tabName = "Forecasting",
             active = F,
             uiOutput("forecastUI") %>% withSpinner()
-            # argonInfoCard(
-            #     value = "350,897",
-            #     title = "TRAFFIC",
-            #     stat = 3.48,
-            #     stat_icon = icon("arrow-up"),
-            #     # stat_icon = argonIcon("bold-up"),
-            #     description = "Since last month",
-            #     icon = icon("chart-bar"),
-            #     icon_background = "danger",
-            #     hover_lift = TRUE
-            # )
         )
     )
 )
