@@ -109,6 +109,7 @@ hc_plot_DeathsRate <- function(data = NewCases_tbl, countryName = 'South Africa'
         ) %>% 
         # hc_add_theme(hc_theme_sandsignika() )
         # hc_add_theme(hc_theme_flat()) %>% 
+        hc_add_theme(hc_theme_538() ) %>% 
         hc_exporting(enabled = TRUE)
     
     return(hc_out)
@@ -168,6 +169,37 @@ getCasesPerc <- function(data = data, countryName = 'Mozambique', typeCase = 'co
     
 }
 
+
+# 4.1 getting Yesterday percentage for Recovered, Death and Unrecovered ---------
+getYesterdayPerc <- function(data_actual = data_actual, data_yesterday = data_yesterday, countryName = 'Mozambique', typeCase = 'confirmed'){
+    
+    v_countryName = countryName
+    
+    
+    result_actual <-
+        data_actual %>%
+        filter(str_detect(countryName, v_countryName))
+    
+    result_yesterday <-
+        data_yesterday %>%
+        filter(str_detect(countryName, v_countryName))
+    
+    if (typeCase == 'recovered') {
+        v_YesterdayPerc <- round(((result_actual$recovered/result_yesterday$recovered) -1)*100,1)
+        
+    } else if (typeCase == 'death') {
+        v_YesterdayPerc <- round(((result_actual$death/result_yesterday$death) -1)*100,1)
+        
+    } else if (typeCase == 'Unrecovered') {
+        v_YesterdayPerc <- round(((result_actual$Unrecovered/result_yesterday$Unrecovered) -1)*100,1)
+        
+    } else {
+        v_YesterdayPerc <- round(((result_actual$confirmed/result_yesterday$confirmed) -1)*100,1)
+    }
+    
+    return(v_YesterdayPerc)
+    
+}
 
 
 
