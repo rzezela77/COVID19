@@ -117,20 +117,20 @@ NewCases_tbl$Death_Rate <- round((NewCases_tbl$death/NewCases_tbl$confirmed)*100
 
 
 
-# # 3.0 Criar Visualizações de dados ----------------------------------------
-# 
+# 3.0 Criar Mapa ----------------------------------------
+
 # # Step 1
 # mapdata <- get_data_from_map(download_map_data("custom/world"))
 # # mapdata <- get_data_from_map(download_map_data("countries/mz/mz-all"))
 # 
-# mapdata %>% glimpse()
-# 
-# 
-# # Step 2
-# df_mapdata <- dataframeTotal %>% 
-#     select(code = countryCode, name = countryName, value = confirmed, death, recovered, Unrecovered)
-# 
-# df_mapdata %>% 
-#     filter(name == 'South Africa') %>% 
+# # mapdata %>% glimpse()
+
+
+# Step 2
+df_mapdata <- dataframeTotal %>%
+    select(code = countryCode, name = countryName, value = confirmed, death, recovered, Unrecovered)
+
+# df_mapdata %>%
+#     filter(name == 'South Africa') %>%
 #     pander()
-# 
+
