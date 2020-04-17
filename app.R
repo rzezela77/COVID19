@@ -3,18 +3,21 @@ if(interactive()){
     library(argonR)
     library(argonDash)
     
-    # library(tidyverse)
+    library(tidyverse)
     library(shinycssloaders)
+    library(shinyWidgets)
+    
+    
+    
+    source(file = 'global.R')
+    source(file = 'getFunctions.R')
     
     source(file = 'ui/header.R')
     source(file = 'ui/body.R')
     source(file = 'ui/dashboardUI.R')
     # source(file = 'ui/sidebar.R')
     
-    source(file = 'global.R')
-    source(file = 'getFunctions.R')
-    
-    source(file = 'CSS.R')
+    # source(file = 'CSS.R')
     
     shiny::shinyApp(
         
