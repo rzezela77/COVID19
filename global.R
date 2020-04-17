@@ -63,6 +63,16 @@ dataframeTotal <- coronavirus %>%
     dplyr::ungroup() %>%
     select(-c(date,region,lat,lon)) 
 
+# creating Yestaerday dataframe
+df_TotalYesterdayCases <- coronavirus %>% 
+    dplyr::group_by(countryName) %>%
+    slice(n() - 1) %>% # max_date -1
+    ungroup() %>%
+    dplyr::mutate(Unrecovered = confirmed - ifelse(is.na(recovered), 0, recovered) - ifelse(is.na(death), 0, death)) %>%
+    dplyr::arrange(-confirmed) %>%
+    dplyr::ungroup() %>%
+    select(-c(date,region,lat,lon)) 
+
 
 # # select total confirmed, recovered, death and Unrecovered by countryName
 # dataframeTotal %>% 
