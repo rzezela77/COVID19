@@ -90,7 +90,7 @@ output$cardUI <- renderUI({
     v_ActiveCount <- prettyNum(v_ActiveCount, big.mark = ",")
     
     
-    # getting Percentage for Recovered, Deaths and Unrecovered
+# 1.1 getting Percentage for Recovered, Deaths and Unrecovered ---------------------------------------------
     
     v_ActivePerc <- getCasesPerc(dataframeTotal, countryName = input$countryNameInput, typeCase = 'Unrecovered')
     
@@ -99,6 +99,28 @@ output$cardUI <- renderUI({
     v_deathsPerc <- getCasesPerc(dataframeTotal, countryName = input$countryNameInput, typeCase = 'death')
     
     
+
+# 1.2 getting yesterday percentage ----------------------------------------
+
+    v_ConfirmedYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'Confirmed')
+    
+    v_ActiveYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'Unrecovered')
+    
+    if (v_ActiveYesterdayPerc >= 0){
+        
+        v_stat_icon = icon("arrow-up") %>% argonTextColor(color = "orange")
+    } else{
+        
+        v_stat_icon = icon("arrow-down") %>% argonTextColor(color = "orange")
+        
+    }
+    
+    
+    v_RecoveredYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'recovered')
+    
+    v_DeathYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'death')
+        
+    
     
     tagList(
         
@@ -106,31 +128,15 @@ output$cardUI <- renderUI({
         
         argonR::argonRow(
             
-            # argonColumn(
-            #     width = 3,
-            #     argonBadge(text = paste0("Active: ",prettyNum(v_confirmedCount,big.mark = ",")
-            #                              # " (",activeCasesPer,"%)"
-            #     ), 
-            #     src = NULL, 
-            #     pill = T, 
-            #     status = "info"),
-            #     h6(paste0("Yesterday: ",
-            #               prettyNum(75,
-            #                         big.mark = ",")
-            #     )
-            #     )
-            #     ),
-            
-
-            
 # Color of the button : default, primary, warning, danger, success, royal.
         argonInfoCard(
             value = v_confirmedCount,
             title = "CONFIRMED",
-            # stat = 3.48,
-            # stat_icon = icon("arrow-up"),
+            # stat = v_ConfirmedYesterdayPerc,
+            stat = h4(paste0(v_ConfirmedYesterdayPerc, '%')) %>% argonTextColor(color = "gray"),
+            stat_icon = icon("arrow-up") %>% argonTextColor(color = "gray"),
             # stat_icon = argonIcon("bold-up"),
-            # description = "Since last month",
+            description = "Since yesterday",
             # #icon = icon("chart-bar"),
             icon = icon("users"),
             icon_background = "danger",
@@ -145,9 +151,10 @@ output$cardUI <- renderUI({
             # value = paste0(v_ActiveCount, " (",v_ActivePerc,"%)"),
             title = "ACTIVE",
             # stat = paste0('(', v_ActivePerc, '%)'),
-            stat = h4(paste0(v_ActivePerc, '%')) %>% argonTextColor(color = "white"),
+            stat = h4(paste0(v_ActiveYesterdayPerc, '%')) %>% argonTextColor(color = "orange"),
             # stat = -3.48,
-            stat_icon = icon("arrow-down") %>% argonTextColor(color = "white"),
+            # stat_icon = icon("arrow-down") %>% argonTextColor(color = "white"),
+            stat_icon = v_stat_icon,
             # # stat_icon = argonIcon("bold-down"),
             description = "Since yesterday",
             icon = icon("hospital"),
@@ -162,9 +169,9 @@ output$cardUI <- renderUI({
             value = v_recoveredCount, 
             # value = paste0(v_recoveredCount, " (",v_recoveredPerc,"%)"),
             title = "RECOVERED",
-            stat = h4(paste0(v_recoveredPerc, '%')) %>% argonTextColor(color = "green"),
+            stat = h4(paste0(v_RecoveredYesterdayPerc, '%')) %>% argonTextColor(color = "green"),
             # stat = strong(paste0(v_recoveredPerc, '%')),
-            stat_icon = icon("arrow-down") %>% argonTextColor(color = "green"),
+            stat_icon = icon("arrow-up") %>% argonTextColor(color = "green"),
             # stat_icon = argonIcon("bold-down"),
             description = "Since yesterday",
             icon = icon("smile"),
@@ -180,8 +187,7 @@ output$cardUI <- renderUI({
             value = v_deathCount, 
             # value = paste0(v_deathCount, " (",v_deathsPerc,"%)"),
             title = "DEATHS",
-            stat = h4(paste0( v_deathsPerc, '%')) %>% argonTextColor(color = "red"),
-            # stat = shiny::p(v_deathsPerc),
+            stat = h4(paste0( v_DeathYesterdayPerc, '%')) %>% argonTextColor(color = "red"),
             # stat = 3.48,
             stat_icon = icon("arrow-up") %>% argonTextColor(color = "red"),
             # # stat_icon = argonIcon("bold-up"),
@@ -200,7 +206,7 @@ argonR::argonRow(
     argonColumn(
         width = 3,
         argonBadge(
-            text = "My badge",
+            text = NULL,
             src = "https://www.google.com",
             pill = FALSE,
             status = "success"
@@ -209,28 +215,28 @@ argonR::argonRow(
     argonColumn(
         width = 3,
         argonBadge(
-            text = "My badge",
-            src = "https://www.google.com",
-            pill = FALSE,
+            text = paste0("Active rate: ", v_ActivePerc, '%'),
+            src = NULL,
+            pill = TRUE,
             status = "warning"
         )
     ),
     argonColumn(
         width = 3,
         argonBadge(
-            text = "My badge",
-            src = "https://www.google.com",
+            text = paste0("Recovered rate: ", v_recoveredPerc, '%'),
+            src = NULL,
             pill = FALSE,
-            status = "primary"
+            status = "success"
         )
     ),
     argonColumn(
         width = 3,
         argonBadge(
-            text = "My badge",
-            src = "https://www.google.com",
+            text = paste0("Deaths rate: ", v_deathsPerc, '%'),
+            src = NULL,
             pill = FALSE,
-            status = "green"
+            status = "danger"
         )
     )
 )
@@ -246,77 +252,73 @@ output$chartUI <- renderUI({
     
     tagList(
         
-        argonCard(
-                        # src = "https://www.google.com",
-                        # status = "success",
-                        # border_level = 0,
-                        # hover_shadow = TRUE,
-                        title = h3("Cases confirmed over time") %>% argonTextColor(color = "white"),
-                        background_color = 'default',
-                        prettyRadioButtons(
-                                    inputId = "dist",
-                                    inline = TRUE,
-                                    # shape = c("round", "square", "curve"),
-                                    shape = "curve",
-                                    animation = "pulse",
-                                    label = "Distribution type:",
-                                    c("Normal" = "norm",
-                                      "Uniform" = "unif",
-                                      "Log-normal" = "lnorm",
-                                      "Exponential" = "exp")
-                                ),
-                        # New Cases per Day
-                        hc_plot_NewCases(data = NewCases_tbl, countryName = input$countryNameInput, cumulative = FALSE)
-                        )
+        # sections_tab,
         
-    )
-        
-        # # argonRow(
-        # #     sections_tab
-        # # )
-        # 
-        # argonR::argonRow(
-        #     argonColumn(
-        #         width = 6,
-        # 
-        #         # sections_tab,
-        # 
-        #         # prettyRadioButtons(
-        #         #     inputId = "dist",
-        #         #     inline = TRUE,
-        #         #     # shape = c("round", "square", "curve"),
-        #         #     shape = "curve",
-        #         #     animation = "pulse",
-        #         #     label = "Distribution type:",
-        #         #     c("Normal" = "norm",
-        #         #       "Uniform" = "unif",
-        #         #       "Log-normal" = "lnorm",
-        #         #       "Exponential" = "exp")
-        #         # ),
-        # 
-        #         argonCard(
-        #             # src = "https://www.google.com",
-        #             # status = "success",
-        #             # border_level = 0,
-        #             # hover_shadow = TRUE,
-        #             title = "Card with Margins",
-        #             # New Cases per Day
-        #             hc_plot_NewCases(data = NewCases_tbl, countryName = input$countryNameInput, cumulative = FALSE)
-        #             )
-        #         ),
-        #     argonColumn(
-        #         width = 6,
-        #         # Cumulative Cases per Day
-        #         # hc_plot_NewCases(data = NewCases_tbl, countryName = 'Mozambique', cumulative = TRUE)
-        # 
-        #         # Fatality Rate
-        #         hc_plot_DeathsRate(data = NewCases_tbl, countryName = input$countryNameInput)
-        #     )
-        # 
-        # )
-    # )
+              argonCard(
+                width = 12,
+                # src = "https://www.google.com",
+                # status = "success",
+                # border_level = 0,
+                # hover_shadow = TRUE,
+                title = h2("Cases confirmed over time") %>% argonTextColor(color = "white"),
+                background_color = 'default',
+                
+                radioGroupButtons(
+                    inputId = "optChart_Id",
+                    choiceNames = c("Daily", "Cumulative", "Fatality Rate"),
+                    choiceValues = c("daily", "cumulative", "deaths"),
+                    status = "primary",
+                    # status = "gray",
+                    size = "normal",
+                    individual = TRUE,
+                    justified = TRUE
+                    ),
+                # prettyRadioButtons(
+                #     inputId = "optChart_Id",
+                #     inline = TRUE,
+                #     # status = c("default", "primary", "success", "info", "danger", "warning")
+                #     status = "default",
+                #     # shape = c("round", "square", "curve"),
+                #     shape = "curve",
+                #     outline = TRUE,
+                #     # fill = TRUE,
+                #     thick = TRUE,
+                #     # plain = TRUE,
+                #     bigger = TRUE,
+                #     # animation = c('smooth', 'jelly', 'tada', 'rotate', 'pulse'),
+                #     animation = "pulse",
+                #     label = NULL,
+                #     # c("Daily" = "daily",
+                #     #   "Cumulative" = "cumulative",
+                #     #   "Fatality Rate" = "deaths")
+                #     choiceNames = c("Daily", "Cumulative", "Fatality Rate"),
+                #     choiceValues = c("daily", "cumulative", "deaths")
+                # ),
+                highchartOutput("hc_out_plot", height = "500px")
+                # # New Cases per Day
+                # hc_plot_NewCases(data = NewCases_tbl, countryName = input$countryNameInput, cumulative = FALSE)
+            )
+            
+        )
+            
     
+})
+
+
+
+# plotting the Cases ------------------------------------------------------
+
+output$hc_out_plot <- renderHighchart({
     
-    
+    switch (input$optChart_Id,
+            # New Cases per Day
+            daily = hc_plot_NewCases(data = NewCases_tbl, countryName = input$countryNameInput, cumulative = FALSE),
+            
+            # Cumulative Cases per Day
+            cumulative = hc_plot_NewCases(data = NewCases_tbl, countryName = input$countryNameInput, cumulative = TRUE),
+            
+            # Fatality Rate
+            deaths = hc_plot_DeathsRate(data = NewCases_tbl, countryName = input$countryNameInput)
+            )
 })
 
