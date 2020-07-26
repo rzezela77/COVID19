@@ -3,7 +3,41 @@ library(tidyverse)
 
 library(highcharter) # for visualization
 
+library(prophet) # for forecasting
+library(zoo)            # working with time series data
+
 coronavirus <- read.csv(file = "https://raw.githubusercontent.com/ulklc/covid19-timeseries/master/countryReport/raw/rawReport.csv", stringsAsFactors = F)
+
+
+# data for importing on PostgreSQL
+
+library(coronavirus)
+library(tidyverse)
+coronavirus <- read.csv(file = "https://raw.githubusercontent.com/ulklc/covid19-timeseries/master/countryReport/raw/rawReport.csv", stringsAsFactors = F)
+
+
+#############################################################
+### loading data from file
+#############################################################
+coronavirus <- read.csv(file = 'data/coronavirus.csv')[, -1]
+
+coronavirus %>% glimpse()
+
+# convert data type
+coronavirus$day <- as.Date(coronavirus$day, '%Y/%m/%d')
+
+# rename column name
+colnames(coronavirus)[1] <- 'date1'
+
+coronavirus %>% 
+  # write.csv(file = 'data/coronavirus_postgres.csv')
+  write_delim(path = 'data/coronavirus_postgres.txt', delim = ",")
+
+
+
+
+
+
 
 coronavirus %>% glimpse()
 
@@ -24,7 +58,7 @@ coronavirus %>%
 
 # getting total confirmed, recovered, death and Unrecovered by countryName
 # confirmedCount 
-dataframeTotal <- coronavirus %>% 
+TotalCases_tbl <- coronavirus %>% 
     dplyr::group_by(countryName) %>%
     slice(n()) %>%
     ungroup() %>%
@@ -34,7 +68,7 @@ dataframeTotal <- coronavirus %>%
     select(-c(date,region,lat,lon)) 
 
 
-df_TotalYesterdayCases <- coronavirus %>% 
+TotalCasesYesterday_tbl <- coronavirus %>% 
   dplyr::group_by(countryName) %>%
   slice(n() - 1) %>% # max_date -1
   ungroup() %>%
@@ -44,10 +78,10 @@ df_TotalYesterdayCases <- coronavirus %>%
   select(-c(date,region,lat,lon)) 
 
 
-dataframeTotal %>% 
+TotalCases_tbl %>% 
   filter(countryName == 'Mozambique')
 
-df_TotalYesterdayCases %>% 
+TotalCasesYesterday_tbl %>% 
   filter(countryName == 'Mozambique')
 
 
@@ -58,7 +92,7 @@ v_getYesterdayPerc
 #     dplyr::mutate(activeCasesPer = round((Unrecovered/confirmed)*100),1)
 
 # select total confirmed, recovered, death and Unrecovered by countryName
-dataframeTotal %>% 
+TotalCases_tbl %>% 
     filter(countryName == 'South Africa')
 
 # getting percent of Active Cases by country name
@@ -93,16 +127,16 @@ No_affected_country <- dataframeTotal %>%
 max_date <- as.Date(max(coronavirus$date)) 
 
 
-df_TotalOldCases = coronavirus %>%
-  dplyr::filter(date == max_date - 1) %>%
-  dplyr::mutate(Unrecovered = confirmed - recovered - death) %>%
-  summarise(totalConfirmed = sum(confirmed,na.rm = T),
-            totalDeath = sum(death,na.rm = T),
-            totalRecovered = sum(recovered,na.rm = T),
-            totalUnrecovered = sum(Unrecovered,na.rm = T)
-  )
-
-coronavirus %>% tail()
+# df_TotalOldCases = coronavirus %>%
+#   dplyr::filter(date == max_date - 1) %>%
+#   dplyr::mutate(Unrecovered = confirmed - recovered - death) %>%
+#   summarise(totalConfirmed = sum(confirmed,na.rm = T),
+#             totalDeath = sum(death,na.rm = T),
+#             totalRecovered = sum(recovered,na.rm = T),
+#             totalUnrecovered = sum(Unrecovered,na.rm = T)
+#   )
+# 
+# coronavirus %>% tail()
 
 
 # # Confirmed Cases Over Time
@@ -474,3 +508,47 @@ coronavirus %>%
 coronavirus %>% 
   filter(countryName == 'Mozambique') %>% 
   tail()
+
+
+
+# 5.0 Forecasting ---------------------------------------------------------
+
+NewCases_tbl %>% glimpse()
+
+original_tbl <- NewCases_tbl[ NewCases_tbl$countryName == 'Mozambique', c('date', 'NewConfirmed')] 
+
+original_tbl <- NewCases_tbl %>% 
+  filter(countryName == 'South Africa') 
+  # select(date, NewConfirmed)
+
+original_tbl %>% glimpse()
+
+original_tbl %>% 
+  select(date, NewConfirmed) %>% 
+  mutate(confirmed_ma5 = rollmean(NewConfirmed, k= 5, fill = NA))
+
+original_tbl <- 
+original_tbl %>% 
+  select(date, NewConfirmed) %>% 
+  mutate(confirmed_log = case_when(
+    NewConfirmed == 0 ~ 1,
+    TRUE ~ NewConfirmed)
+  )
+
+
+original_tbl %>% tail()
+
+
+# forecast_tbl <- forecast_mode(original_tbl[, c(1,3)], periods = 30, freq = 'day')
+# 
+# hc_out <- hc_plot_forecast(Original_tbl = original_tbl[, c(1,3)], forecast_tbl = forecast_tbl)
+
+
+forecast_tbl <- forecast_mode(original_tbl, periods = 30, freq = 'day')
+
+hc_out <- hc_plot_forecast(Original_tbl = original_tbl, forecast_tbl = forecast_tbl)
+
+hc_out
+
+
+getMaxDate
