@@ -9,11 +9,13 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-**inserir figura: I'm not epidemiologist but ...**
+*I'm not Epidemiologist but ...*
+
+![Photo by Tai's Captures on Unsplash](www/image/tai-s-captures-0I52FCHNjoU-unsplash.jpg)
 
 ## 1.0 Introdução
 
-Não dá para ficar indiferente perante a essa pandemia que assola o mundo neste momento tão negro. Vamos aplicar o nosso saber para realizar análises de dados usando **R Shiny** desenvolvendo *Dashboard Reporting* de forma voluntária.
+Não dá para ficar indiferente perante a essa pandemia que assola o mundo neste momento. Por isso, de forma voluntária vamos aplicar o nosso saber para realizar análises de dados usando **R Shiny**  para desenvolver *Dashboard Reporting*.
 
 Para o presente estudo temos como fonte de dados o  **R Package ‘coronavirus’** que providencia numa base diária o sumário de casos de Coronavirus (COVID19) por país/estado, *Data source: Johns Hopkins University Center for Systems Science and Engineering (JHU CCSE) Coronavirus <https://systems.jhu.edu/research/publichealth/ncov/>*.
 
@@ -62,10 +64,10 @@ coronavirus %>%
     pander()
 ```
 
-### 2.1 Valores Totais dos Casos
+### 2.1 Obter valores totais dos Casos
 
-Vamos criar um *dataframe* para armazenar os valores totais dos casos *confirmado*, *recuperados*, *mortos* e *activos*. O que facilitará a obtenção de percentagens para cada caso.
-*serão usados para o InfoCard no Shiny app*
+Vamos criar um *dataframe* para armazenar os valores totais dos casos **confirmado**, **recuperados**, **mortos** e **activos**. O que facilitará a obtenção de percentagem para cada caso.  
+*Esses dados serão usados para o InfoCard no Shiny app*
 ```{r}
 # getting total confirmed, recovered, death and Unrecovered by countryName
 # confirmedCount 
@@ -160,12 +162,12 @@ NewCases_tbl %>%
 
 ### 3.1 Criar Mapa
 
-Vamos mostrar os casos atraves do mapa permitindo visualizar todos os paises e os respectivos casos de forma interactiva. Será possivel visualizar o número total de casos *confirmado*, *recuperados*, *mortos* e *activos*.
+Vamos mostrar os casos através do mapa permitindo visualizar todos os paises e os respectivos casos de forma interactiva. Será possivel visualizar o número total de casos **confirmado**, **recuperados**, **mortos** e **activos**.
 
 Podemos seguir alguns passos:  
-1. obter o *mapdata* para averiguar a natureza de dados e para facilitar determinar que variáveis serão usados conforme os dados que dispomos;  
+1. obter o *mapdata* para averiguar a natureza de dados e para facilitar na determinação de variáveis que serão usadas conforme os dados de que dispomos;  
 2. criar um *dataframe* para mostrar as variáveis que pretendemos visualizar;  
-3. criar o mapa fazendo o *join* com o *dataframe* criado para o efeito.  
+3. criar o mapa fazendo o *join* entre o *dataframe* criado no ponto 2 e o *mapdata*.  
 
 1o Passo:
 ```{r}
@@ -186,7 +188,7 @@ df_mapdata %>%
     
 ```
 
-Como podem observar pelo *output* podemos fazer o *join* entre as tabelas usando a variável *code* ou *name* referindo-se ao nome do país.
+Como podem observar pelo *output* podemos fazer o *join* entre as tabelas usando a variável *code* ou *name* (nome do país).
 
 3o Passo:
 ```{r}
@@ -219,7 +221,7 @@ hcmap("custom/world", name = "COVID-19",
 ### 3.2 Visualização: casos confirmados ao longo do tempo
 
 #### 3.2.1 Criar Funções
-Vamos criar funções para mostrar as visualizações. As vantagens de criar funções são enormes e inquestionáveis, desde a manutenção do módulo/projecto e a sua repetitividade. Portanto, no presente trabalho vou colocar aqui a disposição porque normalmente desenvolvo em um ficheiro à parte, por exemplo *getFunctions.R*, conforme as *boas prácticas* . Mas para não vos remeter ao meu *github* para ver o código vou disponobiliza-lo aqui.
+O nosso foco é criar funções para mostrar as visualizações. As vantagens de criar funções são enormes e inquestionáveis, desde a manutenção do módulo/projecto e a sua repetitividade. Portanto, no presente trabalho vou colocar aqui a disposição porque normalmente desenvolvo em um ficheiro à parte, por exemplo *getFunctions.R*, e chamo-o conforme as *boas prácticas*. Mas para não vos remeter ao meu *github* para ver o código vou disponibiliza-lo aqui.
 
 ```{r}
 
@@ -385,10 +387,10 @@ hc_plot_NewCases(data = NewCases_tbl, countryName = 'Italy', cumulative = TRUE)
 
 
 # New Cases per Day
-hc_plot_NewCases(data = NewCases_tbl, countryName = 'United States of America', cumulative = FALSE)
+hc_plot_NewCases(data = NewCases_tbl, countryName = 'United States', cumulative = FALSE)
 
 # Cumulative Cases per Day
-hc_plot_NewCases(data = NewCases_tbl, countryName = 'United States of America', cumulative = TRUE)
+hc_plot_NewCases(data = NewCases_tbl, countryName = 'United States', cumulative = TRUE)
 
 # New Cases per Day
 hc_plot_NewCases(data = NewCases_tbl, countryName = 'China', cumulative = FALSE)
