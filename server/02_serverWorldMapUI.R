@@ -36,7 +36,7 @@ output$hc_out_worldMap <- renderHighchart({
         hc_chart(zoomType = "xy") %>%
         hc_mapNavigation(enabled = TRUE) %>% 
         # hc_colorAxis(stops = color_stops(5)) %>% 
-        hc_colorAxis(dataClasses = color_classes(c(0, 20, 50, 100, 500, 1000, 10000))) %>%
+        hc_colorAxis(dataClasses = color_classes(c(0, 50, 100, 500, 1000, 10000))) %>%
         hc_exporting(enabled = TRUE) %>% 
         hc_tooltip(useHTML = TRUE,
                    headerFormat = '',
