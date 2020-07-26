@@ -33,10 +33,19 @@ body = argonDashBody(
                     font-style: italic;font-weight: bold;')
                        ),
                 argonColumn(
-                    width = 4
-                    # img(src = 'covidGif.gif',width = "100%",height = "80%"),
-                    # h6("Source: Giphy",style = 'text-align:center;font-style: italic;font-weight: bold;')
+                    width = 4,
+                    argonAlert(
+                        icon = argonIcon("watch-time"),
+                        status = "primary",
+                        paste("Alert for last updated Data: ", getMaxDate(coronavirus)),
+                        closable = TRUE
+                    )
                 ),
+                # argonColumn(
+                #     width = 4
+                #     # img(src = 'covidGif.gif',width = "100%",height = "80%"),
+                #     # h6("Source: Giphy",style = 'text-align:center;font-style: italic;font-weight: bold;')
+                # ),
                 argonColumn(
                             width = 4,
                             img(src = 'covidGif.gif',width = "100%",height = "80%"),
@@ -89,14 +98,14 @@ body = argonDashBody(
             
             argonRow(
                 argonColumn(
-                    width = 3,
+                    width = 4,
                     pickerInput(
                         inputId = "countryNameInput",
                         label = strong("Select country:"),
-                        choices = levels(dataframeTotal$countryName),
+                        choices = c("All", levels(dataframeTotal$countryName)),
                         # selected = levels(dataframeTotal$countryName),
                         # multiple = TRUE,
-                        selected = "Mozambique",
+                        selected = "All",
                         width = "100%",
                         options = list(`live-search` = TRUE
                                        # `select-all-text` = "Yeah, all !"
@@ -104,8 +113,10 @@ body = argonDashBody(
                         inline = F
                         )
                 )
-            )
-            ,argonRow(
+                
+            ),
+            
+            argonRow(
                 argonColumn(
                     width = 12,
                     uiOutput("chartUI") %>% withSpinner()
@@ -118,15 +129,32 @@ body = argonDashBody(
             uiOutput("worldMapUI") %>% withSpinner()
             
         ),
-        argonTab(
-            tabName = "Comparison",
-            active = F,
-            uiOutput("comparisonUI") %>% withSpinner()
-            
-        ),
+        
+# in development
+        # argonTab(
+        #     tabName = "Comparison",
+        #     active = F,
+        #     uiOutput("comparisonUI") %>% withSpinner()
+        #     
+        # ),
+
         argonTab(
             tabName = "Forecasting",
             active = F,
+            argonRow(
+                argonColumn(
+                    width = 4,
+                    pickerInput(
+                        inputId = "countryNameInput_v2",
+                        label = strong("Select country:"),
+                        choices = levels(dataframeTotal$countryName),
+                        selected = "Mozambique",
+                        width = "100%",
+                        options = list(`live-search` = TRUE),
+                        inline = F
+                    )
+                )
+            ),
             uiOutput("forecastUI") %>% withSpinner()
         )
     )
