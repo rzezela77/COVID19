@@ -6,6 +6,7 @@
 
 # 1.0 cardUI --------------------------------------------------------------
 
+# 1.1 Test: sections - argonDashHeader --------------------------------------------------------
 
 sections_tab <- argonTabItem(
     tabName = "sections",
@@ -56,6 +57,108 @@ sections_tab <- argonTabItem(
 )
 
 
+# 1.1 Test: Alerts --------------------------------------------------------
+
+
+
+alerts_tab <- argonTabItem(
+    tabName = "alerts",
+    argonH1("Alerts", display = 4),
+    argonRow(
+        argonColumn(
+            width = 4,
+            argonAlert(
+                icon = argonIcon("basket"),
+                status = "danger",
+                "This is an alert",
+                closable = TRUE
+            )
+        ),
+        argonColumn(
+            width = 4,
+            argonAlert(
+                icon = icon("bars"),
+                status = "success",
+                "This is an alert",
+                closable = TRUE
+            )
+        ),
+        argonColumn(
+            width = 4,
+            argonAlert(
+                icon = argonIcon("app", color = "white"),
+                status = "info",
+                "This is an alert",
+                closable = TRUE
+            )
+        )
+    ),
+    br(), br(),
+    
+    # Modals
+    argonH1("Modals", display = 4),
+    argonRow(
+        
+        # modal with gradient
+        argonButton(
+            name = "Click me!",
+            status = "danger",
+            icon = argonIcon("atom"),
+            size = "lg",
+            toggle_modal = TRUE,
+            modal_id = "modal1"
+        ),
+        argonModal(
+            id = "modal1",
+            title = "This is a modal",
+            status = "danger",
+            gradient = TRUE,
+            "YOU SHOULD READ THIS!",
+            br(),
+            "A small river named Duden flows by their place and supplies it with the necessary regelialia."
+        ),
+        
+        # modal without gradient
+        argonButton(
+            name = "Click me!",
+            status = "warning",
+            icon = argonIcon("atom"),
+            size = "lg",
+            toggle_modal = TRUE,
+            modal_id = "modal2"
+        ),
+        argonModal(
+            id = "modal2",
+            title = "This is a modal without gradient",
+            status = "warning",
+            gradient = FALSE,
+            "YOU SHOULD READ THIS!",
+            br(),
+            "A small river named Duden flows by their place and supplies it with the necessary regelialia."
+        ),
+        
+        # Modal without status not gradient
+        argonButton(
+            name = "Click me!",
+            status = "info",
+            icon = argonIcon("atom"),
+            size = "lg",
+            toggle_modal = TRUE,
+            modal_id = "modal3"
+        ),
+        argonModal(
+            id = "modal3",
+            title = "This is a modal without gradient nor status",
+            status = NULL,
+            gradient = FALSE,
+            "YOU SHOULD READ THIS!",
+            br(),
+            "A small river named Duden flows by their place and supplies it with the necessary regelialia."
+        )
+        
+    )
+)
+
 
 output$cardUI <- renderUI({
     
@@ -77,49 +180,49 @@ output$cardUI <- renderUI({
     
     
     v_recoveredCount <- getCasesCount(countryName = input$countryNameInput, typeCase = 'recovered')
-    
+
     v_recoveredCount <- prettyNum(v_recoveredCount, big.mark = ",")
-    
-    
+
+
     v_deathCount <- getCasesCount(countryName = input$countryNameInput, typeCase = 'death')
-    
+
     v_deathCount <- prettyNum(v_deathCount, big.mark = ",")
-    
+
     v_ActiveCount <- getCasesCount(countryName = input$countryNameInput, typeCase = 'Unrecovered')
-    
+
     v_ActiveCount <- prettyNum(v_ActiveCount, big.mark = ",")
     
     
 # 1.1 getting Percentage for Recovered, Deaths and Unrecovered ---------------------------------------------
-    
+
     v_ActivePerc <- getCasesPerc(dataframeTotal, countryName = input$countryNameInput, typeCase = 'Unrecovered')
-    
+
     v_recoveredPerc <- getCasesPerc(dataframeTotal, countryName = input$countryNameInput, typeCase = 'recovered')
-    
+
     v_deathsPerc <- getCasesPerc(dataframeTotal, countryName = input$countryNameInput, typeCase = 'death')
-    
+
     
 
 # 1.2 getting yesterday percentage ----------------------------------------
 
     v_ConfirmedYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'Confirmed')
-    
+
     v_ActiveYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'Unrecovered')
-    
+
     if (v_ActiveYesterdayPerc >= 0){
-        
+
         v_stat_icon = icon("arrow-up") %>% argonTextColor(color = "orange")
     } else{
-        
+
         v_stat_icon = icon("arrow-down") %>% argonTextColor(color = "orange")
-        
+
     }
-    
-    
+
+
     v_RecoveredYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'recovered')
-    
+
     v_DeathYesterdayPerc <- getYesterdayPerc(data_actual = dataframeTotal, data_yesterday = df_TotalYesterdayCases, countryName = input$countryNameInput, typeCase = 'death')
-        
+
     
     
     tagList(
@@ -133,7 +236,8 @@ output$cardUI <- renderUI({
             value = v_confirmedCount,
             title = "CONFIRMED",
             # stat = v_ConfirmedYesterdayPerc,
-            stat = h4(paste0(v_ConfirmedYesterdayPerc, '%')) %>% argonTextColor(color = "gray"),
+            # stat = h4(paste0(v_ConfirmedYesterdayPerc, '%')) %>% argonTextColor(color = "gray"),
+            stat = h4(prettyNum(v_ConfirmedYesterdayPerc, big.mark = ",")) %>% argonTextColor(color = "gray"),
             stat_icon = icon("arrow-up") %>% argonTextColor(color = "gray"),
             # stat_icon = argonIcon("bold-up"),
             description = "Since yesterday",
@@ -141,17 +245,18 @@ output$cardUI <- renderUI({
             icon = icon("users"),
             icon_background = "danger",
             hover_lift = TRUE,
-            # background_color = "orange"
+            # background_color = "primary",
             background_color = 'default',
             gradient = TRUE
         ),
-        
+
         argonInfoCard(
-            value = v_ActiveCount, 
+            value = v_ActiveCount,
             # value = paste0(v_ActiveCount, " (",v_ActivePerc,"%)"),
             title = "ACTIVE",
             # stat = paste0('(', v_ActivePerc, '%)'),
-            stat = h4(paste0(v_ActiveYesterdayPerc, '%')) %>% argonTextColor(color = "orange"),
+            # stat = h4(paste0(v_ActiveYesterdayPerc, '%')) %>% argonTextColor(color = "orange"),
+            stat = h4(prettyNum(v_ActiveYesterdayPerc, big.mark = ",")) %>% argonTextColor(color = "orange"),
             # stat = -3.48,
             # stat_icon = icon("arrow-down") %>% argonTextColor(color = "white"),
             stat_icon = v_stat_icon,
@@ -160,16 +265,17 @@ output$cardUI <- renderUI({
             icon = icon("hospital"),
             icon_background = "warning",
             shadow = TRUE,
-            # background_color = 'warning'
+            # background_color = 'warning',
             background_color = 'default',
             gradient = TRUE
         ),
-        
+
         argonInfoCard(
-            value = v_recoveredCount, 
+            value = v_recoveredCount,
             # value = paste0(v_recoveredCount, " (",v_recoveredPerc,"%)"),
             title = "RECOVERED",
-            stat = h4(paste0(v_RecoveredYesterdayPerc, '%')) %>% argonTextColor(color = "green"),
+            stat = h4(prettyNum(v_RecoveredYesterdayPerc, big.mark = ",")) %>% argonTextColor(color = "green"),
+            # stat = h4(paste0(v_RecoveredYesterdayPerc, '%')) %>% argonTextColor(color = "green"),
             # stat = strong(paste0(v_recoveredPerc, '%')),
             stat_icon = icon("arrow-up") %>% argonTextColor(color = "green"),
             # stat_icon = argonIcon("bold-down"),
@@ -184,22 +290,23 @@ output$cardUI <- renderUI({
             # gradient = TRUE
         ),
         argonInfoCard(
-            value = v_deathCount, 
+            value = v_deathCount,
             # value = paste0(v_deathCount, " (",v_deathsPerc,"%)"),
             title = "DEATHS",
-            stat = h4(paste0( v_DeathYesterdayPerc, '%')) %>% argonTextColor(color = "red"),
+            stat = h4(prettyNum(v_DeathYesterdayPerc, big.mark = ",")) %>% argonTextColor(color = "red"),
+            # stat = h4(paste0( v_DeathYesterdayPerc, '%')) %>% argonTextColor(color = "red"),
             # stat = 3.48,
-            stat_icon = icon("arrow-up") %>% argonTextColor(color = "red"),
+            stat_icon = icon("arrow-up") %>% argonTextColor(color = "red") ,
             # # stat_icon = argonIcon("bold-up"),
             description = "Since yesterday",
             icon = icon("heartbeat"),
             icon_background = "danger",
             hover_lift = TRUE,
             background_color = 'default',
+            # background_color = "danger",
             # gradient = FALSE
             shadow = TRUE,
             gradient = TRUE
-            # background_color = "blue"
         )
     ),
 argonR::argonRow(
@@ -254,6 +361,8 @@ output$chartUI <- renderUI({
         
         # sections_tab,
         
+        # alerts_tab
+        
               argonCard(
                 width = 12,
                 # src = "https://www.google.com",
@@ -262,12 +371,13 @@ output$chartUI <- renderUI({
                 # hover_shadow = TRUE,
                 title = h2("Cases confirmed over time") %>% argonTextColor(color = "white"),
                 background_color = 'default',
-                
+                # background_color = 'primary',
+
                 radioGroupButtons(
                     inputId = "optChart_Id",
                     choiceNames = c("Daily", "Cumulative", "Fatality Rate"),
                     choiceValues = c("daily", "cumulative", "deaths"),
-                    status = "primary",
+                    status = "secondary",
                     # status = "gray",
                     size = "normal",
                     individual = TRUE,
@@ -298,7 +408,7 @@ output$chartUI <- renderUI({
                 # # New Cases per Day
                 # hc_plot_NewCases(data = NewCases_tbl, countryName = input$countryNameInput, cumulative = FALSE)
             )
-            
+
         )
             
     
